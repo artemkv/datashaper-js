@@ -13,6 +13,7 @@ const OP_LISTVALUES = Symbol();
 const OP_TOLIST = Symbol();
 const OP_TOMAP = Symbol();
 const OP_TOLOOKUP = Symbol();
+const OP_ZIP = Symbol();
 const OP_LOG = Symbol();
 
 const toOpString = (op) => {
@@ -30,6 +31,7 @@ const toOpString = (op) => {
     case OP_TOLIST: return 'toList';
     case OP_TOMAP: return 'toMap';
     case OP_TOLOOKUP: return 'toLookup';
+    case OP_ZIP: return 'zip';
     case OP_LOG: return 'log';
   }
 }
@@ -149,6 +151,18 @@ const flatMap = (aa, f) => {
   return aa.flatMap(f);
 }
 
+const zip = (aa, xx, f) => {
+  if (!Array.isArray(aa)) {
+    throw "not an array";
+  }
+  if (!Array.isArray(xx)) {
+    throw "expected to be zipped with an array";
+  }
+  return aa.map(function (a, idx) {
+    return f(a, xx[idx]);
+  });
+}
+
 const run = (start, pipe, debug) => {
   let obj = start;
   if (debug) {
@@ -183,6 +197,8 @@ const run = (start, pipe, debug) => {
       obj = toMap(obj, op.arg.kfunc, op.arg.vfunc);
     } else if (op.op === OP_TOLOOKUP) {
       obj = toLookup(obj, op.arg.kfunc, op.arg.vfunc);
+    } else if (op.op === OP_ZIP) {
+      obj = zip(obj, op.arg.xx, op.arg.f);
     } else if (op.op === OP_LOG) {
       console.log(`${JSON.stringify(obj)}`);
     }
@@ -251,6 +267,10 @@ const from = (obj) => {
       pipe.push({ op: OP_TOLOOKUP, arg: { kfunc, vfunc } });
       return shaper;
     },
+    zip: (xx, f) => {
+      pipe.push({ op: OP_ZIP, arg: { xx, f } });
+      return shaper;
+    },
     log: () => {
       pipe.push({ op: OP_LOG });
       return shaper;
@@ -265,9 +285,12 @@ const id = (x) => x;
 
 const konst = (x) => (_) => x;
 
+const pair = (fst, snd) => ({ fst, snd })
+
 module.exports = {
   from,
   id,
-  konst
+  konst,
+  pair
 };
 

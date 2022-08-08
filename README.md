@@ -74,8 +74,8 @@ from([1, 2, 3])
 
 ## API
 
-Arrays support: __map__, __filter__, __flatMap__, __distinct__, __sorted__, __skip__, __take__, __toSet__, __toMap__, __toLookup__
+Arrays support: __map__, __filter__, __flatMap__, __distinct__, __sorted__, __skip__, __take__, __toSet__, __toMap__, __toLookup__, __zip__
 
 Objects support: __map__, __filter__, __toList__, __listKeys__, __listValues__
 
-Extra helpful functions: __id__, __konst__
+Extra helpful functions: __id__, __konst__, __pair__

@@ -1,4 +1,4 @@
-const { from, id, konst } = require('./shaper');
+const { from, id, konst, pair } = require('./shaper');
 
 test('Selling case - list', () => {
   const actual = from([0, 1, 2, 3, 2, 3, 4, 5, 6])
@@ -380,5 +380,60 @@ test('toLookup over a map', () => {
   }
 
   const expected = "not an array";
+  expect(actual).toStrictEqual(expected);
+});
+
+test('zip', () => {
+  const actual = from([1, 2, 3])
+    .zip(['a', 'b', 'c'], pair)
+    .return();
+
+  const expected = [{ fst: 1, snd: 'a' }, { fst: 2, snd: 'b' }, { fst: 3, snd: 'c' }];
+  expect(actual).toStrictEqual(expected);
+});
+
+test('zip with larger array', () => {
+  const actual = from([1, 2, 3])
+    .zip(['a', 'b', 'c', 'd'], pair)
+    .return();
+
+  const expected = [{ fst: 1, snd: 'a' }, { fst: 2, snd: 'b' }, { fst: 3, snd: 'c' }];
+  expect(actual).toStrictEqual(expected);
+});
+
+test('zip with smaller array', () => {
+  const actual = from([1, 2, 3])
+    .zip(['a', 'b'], pair)
+    .return();
+
+  const expected = [{ fst: 1, snd: 'a' }, { fst: 2, snd: 'b' }, { fst: 3, snd: undefined }];
+  expect(actual).toStrictEqual(expected);
+});
+
+test('zip over map', () => {
+  let actual;
+  try {
+    from({ a: 1, b: 2, c: 3 })
+      .zip([], pair)
+      .return();
+  } catch (err) {
+    actual = err;
+  }
+
+  const expected = "not an array";
+  expect(actual).toStrictEqual(expected);
+});
+
+test('zip with map', () => {
+  let actual;
+  try {
+    from([1, 2, 3])
+      .zip({}, pair)
+      .return();
+  } catch (err) {
+    actual = err;
+  }
+
+  const expected = "expected to be zipped with an array";
   expect(actual).toStrictEqual(expected);
 });
