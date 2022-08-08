@@ -1,0 +1,14 @@
+{
+  "name": "datashaper-js",
+  "version": "1.0.4",
+  "description": "Pure js minimalist data shaper",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Artem Kondratyev",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^28.1.0"
+  }
+}
