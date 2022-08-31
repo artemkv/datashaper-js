@@ -14,6 +14,7 @@ const OP_TOLIST = Symbol();
 const OP_TOMAP = Symbol();
 const OP_TOLOOKUP = Symbol();
 const OP_ZIP = Symbol();
+const OP_CONCAT = Symbol();
 const OP_LOG = Symbol();
 
 const toOpString = (op) => {
@@ -32,6 +33,7 @@ const toOpString = (op) => {
     case OP_TOMAP: return 'toMap';
     case OP_TOLOOKUP: return 'toLookup';
     case OP_ZIP: return 'zip';
+    case OP_CONCAT: return 'concat';
     case OP_LOG: return 'log';
   }
 }
@@ -151,16 +153,26 @@ const flatMap = (aa, f) => {
   return aa.flatMap(f);
 }
 
-const zip = (aa, xx, f) => {
+const zip = (aa, bb, f) => {
   if (!Array.isArray(aa)) {
     throw "not an array";
   }
-  if (!Array.isArray(xx)) {
+  if (!Array.isArray(bb)) {
     throw "expected to be zipped with an array";
   }
   return aa.map(function (a, idx) {
-    return f(a, xx[idx]);
+    return f(a, bb[idx]);
   });
+}
+
+const concat = (aa, bb) => {
+  if (!Array.isArray(aa)) {
+    throw "not an array";
+  }
+  if (!Array.isArray(bb)) {
+    throw "expected to be concated with an array";
+  }
+  return aa.concat(bb);
 }
 
 const run = (start, pipe, debug) => {
@@ -198,7 +210,9 @@ const run = (start, pipe, debug) => {
     } else if (op.op === OP_TOLOOKUP) {
       obj = toLookup(obj, op.arg.kfunc, op.arg.vfunc);
     } else if (op.op === OP_ZIP) {
-      obj = zip(obj, op.arg.xx, op.arg.f);
+      obj = zip(obj, op.arg.bb, op.arg.f);
+    } else if (op.op === OP_CONCAT) {
+      obj = concat(obj, op.arg.bb);
     } else if (op.op === OP_LOG) {
       console.log(`${JSON.stringify(obj)}`);
     }
@@ -267,8 +281,12 @@ const from = (obj) => {
       pipe.push({ op: OP_TOLOOKUP, arg: { kfunc, vfunc } });
       return shaper;
     },
-    zip: (xx, f) => {
-      pipe.push({ op: OP_ZIP, arg: { xx, f } });
+    zip: (bb, f) => {
+      pipe.push({ op: OP_ZIP, arg: { bb, f } });
+      return shaper;
+    },
+    concat: (bb) => {
+      pipe.push({ op: OP_CONCAT, arg: { bb } });
       return shaper;
     },
     log: () => {

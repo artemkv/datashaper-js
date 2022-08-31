@@ -76,7 +76,7 @@ from([1, 2, 3])
 
 ## API
 
-Arrays support: __map__, __filter__, __flatMap__, __distinct__, __sorted__, __skip__, __take__, __zip__, __toSet__, __toMap__, __toLookup__
+Arrays support: __map__, __filter__, __flatMap__, __distinct__, __sorted__, __skip__, __take__, __zip__, __concat__, __toSet__, __toMap__, __toLookup__
 
 Objects support: __map__, __filter__, __toList__, __listKeys__, __listValues__
 
@@ -162,6 +162,16 @@ from([1, 2, 3])
     .return();
 
 // [{ fst: 1, snd: 'a' }, { fst: 2, snd: 'b' }, { fst: 3 }]
+```
+
+__concat__
+
+```js
+from([1, 2, 3])
+    .concat([4, 5])
+    .return();
+
+// [1, 2, 3, 4, 5]
 ```
 
 __toSet__

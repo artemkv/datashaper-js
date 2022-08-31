@@ -437,3 +437,40 @@ test('zip with map', () => {
   const expected = "expected to be zipped with an array";
   expect(actual).toStrictEqual(expected);
 });
+
+test('concat', () => {
+  const actual = from([1, 2, 3])
+    .concat([4, 5])
+    .return();
+
+  const expected = [1, 2, 3, 4, 5];
+  expect(actual).toStrictEqual(expected);
+});
+
+test('concat over map', () => {
+  let actual;
+  try {
+    from({ a: 1, b: 2, c: 3 })
+      .concat([])
+      .return();
+  } catch (err) {
+    actual = err;
+  }
+
+  const expected = "not an array";
+  expect(actual).toStrictEqual(expected);
+});
+
+test('concat with map', () => {
+  let actual;
+  try {
+    from([1, 2, 3])
+      .concat({})
+      .return();
+  } catch (err) {
+    actual = err;
+  }
+
+  const expected = "expected to be concated with an array";
+  expect(actual).toStrictEqual(expected);
+});
